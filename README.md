@@ -157,7 +157,7 @@ Keywords and qualifiers
 | `personal` | | Requires you to be the owner to view. |
 | `public` | | Can be viewed by anyone on the web, even if the user is not logged in. |
 | `private` | | Cannot be viewed by anyone who is logged in except administrators. |
-| `lockable` | | Can be locked and therefore unmodifiable. |
+| `lockable` | {} | Can be locked and thereafter unmodifiable unless unlocked. |
 
 Structural strict types
 | Name | Description |
