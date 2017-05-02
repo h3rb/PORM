@@ -9,6 +9,18 @@ _Pown_ is an Object-Relational Mapper (O/R) combined with Imaginary Object-Role 
 
 The ORM will implement data structures and relationships only.  In your PHP models, you can react to data relationships, or used prepackaged features, or package your own features in reaction to the data structure.  The ORM will never give you data you cannot access, as long as the relationships are established correctly in your implementation.
 
+### How it works
+
+Pown can be used to quickly build complex data object models.
+
+The approach:
+1. Pown works on four major data concepts: a JSON object, a Table definition, a Role, and Enumerations (or Flags)
+2. Pown defines ownership limits and cross-table relationships
+
+Pown generates skeleton files in PHP for models and enumerations, SQL queries and a few other script types.  It will not attempt to update model code, but it may generate skeletons for models and enumerations that don't already exist.  For scripts that have previously been generated, it will try to detect using checksum data stored at the top of the script if the file has changed since last run.  If it has not changed, it will regenerate the skeleton codes.  Removing the checksum data or changing the file in any way will make it skip skeletal generation.
+
+Pown's ORM can be used to seed a database.  Advancement (not migration) is handled through the seeding.  More complicated migrations other than just adding tables (advancement of an O/R) requires use of a migration definition and this follows a specific format defined below in the "Migrations" section.  SQL will be provided as output, it is up to you to execute the queries.  It is recommended you read the output before running it.
+
 ## Syntax
 
 HData is this special format that lets me define basic data structures using a simple syntax.  The general syntax is:
@@ -92,6 +104,10 @@ table topic {
  property {enum:category Category}
 }
 
+json name {
+ ... experimental, define json structure ...
+}
+
 enum toggle { hi, mid, low }
 enum dial { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
 enum category {_"http://cdn/categories.json"}   # use of _ denotes external source local file or url
@@ -132,9 +148,9 @@ Keywords and qualifiers
 | `name` | `{textual content}` | Sets the name of something.  Purely descriptive. |
 | `description` | `{textual content}` | Sets a description of something for documenting its purpose. |
 | `notes` | `{note content}` | Any additional notes or thoughts on this item. |
-| `creatable` | {user admin} | Indicates what ACL roles can create this. |
-| `ownable` | {creator|anyone} | Indicates who can claim ownership of something and therefore write to it. |
-| `collection` | {type creator|group|anyone} | Defines a collection from a related table as children. |
+| `creatable` | {roles} | Indicates what ACL roles can create this. |
+| `ownable` | {roles} | Indicates who can claim ownership of something and therefore write to it.  See roles. |
+| `collection` | {type roles} | Defines a collection from a related table as children. |
 | `property` | {type name qualifiers} | Defines a strictly typed property like a string or a complex object in JSON. See qualifiers table below |
 | `property` | {parent table qualifiers} | Defines a table parent reference.  See below |
 | `requires` | {ACL} | Requires an ACL to view. |
@@ -143,7 +159,7 @@ Keywords and qualifiers
 | `private` | | Cannot be viewed by anyone who is logged in except administrators. |
 | `lockable` | | Can be locked and therefore unmodifiable. |
 
-Structural types
+Structural strict types
 | Name | Description |
 | --- | --- |
 | int | Storeable as an int(11) |
@@ -156,13 +172,12 @@ Structural types
 | enum:name | A special set of integers that translate into states |
 | flags:name | A special set of toggles stored in a single integer using bit vectoring |
 | json | JSON stored in a LONGTEXT |
-
-
-
+| json:object | JSON stored in a specified format in a LONGTEXT |
+| numbers | A list of numbers stored in a LONGTEXT in CSV format |
 
 Note on ACL and roles: ACL are definable using the role definition type, but there are several roles which are special and programmed into Pown.
 
-Default Role Object Definitions:
+Reserved Role Definitions:
 
 | Name | Description |
 | --- | --- |
@@ -174,3 +189,22 @@ Default Role Object Definitions:
 | Group | This role indicates the user shares a common group with the creator/author. |
 
 
+
+Migrations
+
+A migration document can be provided to $orm->Migrate() that will take an old ORM and update it by a specific set of rules. 
+| Syntax | Description |
+| --- | --- |
+| `table:old -> table:new` | Renames an entire table prior to performing a full sync. |
+| `table:old.field -> table:new.field` | Defines a renaming of an old field name to a new field name, prior to performing a full sync |
+| drop old.field | Forces an old field to be dropped entirely (deleted). |
+| drop table:old | Drops an entire table. |
+
+In place of `table` you can also use `enum`, `json`, `role` or `flag`
+
+Note that the resulting script will merely be written, but not executed.  $orm will not actually execute on your database.  This is done so you can inspect the script for changes before executing it on your data.  When Pown encounters existing scripts, it will make a backup of the previous data before it executes and you will see this in the script.
+
+
+Example:
+```
+```
