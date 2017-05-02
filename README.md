@@ -114,6 +114,7 @@ table <name_in_database> {
 All tables have some default fields assigned to them.  One is "ID" for example.  Here is the full list in SQL.
 
 | SQL | Purpose |
+| --- | --- |
 | ID UNSIGNED INT NOT NULL PRIMARY KEY AUTO_INCREMENT | The unique identifier, obscured to the client with a bidirectional hash. |
 | ACL TEXT | Contains any specialty ACL tags |
 | Creator UNSIGNED INT NOT NULL | Reference to the object originator |
@@ -127,6 +128,7 @@ Defines a table and executes a series of _commands_ in its definition that estab
 Keywords and qualifiers
 
 | Keyword | Parameters | Purpose |
+| --- | --- | --- |
 | `name` | `{textual content}` | Sets the name of something.  Purely descriptive. |
 | `description` | `{textual content}` | Sets a description of something for documenting its purpose. |
 | `notes` | `{note content}` | Any additional notes or thoughts on this item. |
@@ -143,6 +145,7 @@ Keywords and qualifiers
 
 Structural types
 | Name | Description |
+| --- | --- |
 | int | Storeable as an int(11) |
 | decimal | Storeable as a decimal(10,8) |
 | money | Storeable specifically as monetary units, which includes a standard currency type but will be converted by the front-end to localize. |
@@ -162,6 +165,7 @@ Note on ACL and roles: ACL are definable using the role definition type, but the
 Default Role Object Definitions:
 
 | Name | Description |
+| --- | --- |
 | User | All users have this role. |
 | Admin | Only special users have this role.  This is the highest level of access. |
 | Anyone | This role indicates any user. |
