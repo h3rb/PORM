@@ -14,7 +14,7 @@ $orm=new Pown('/offline/data_model.pown');
 
 Contents of ```data_model.pown```:
 
-```javascript
+```C++
 comment {
  name "Comment"
  description "Your comment."
